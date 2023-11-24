@@ -25,6 +25,10 @@ public class ValidaService {
     public void validaPila(String pilaStr){
         ObjectMapper objectMapper = new ObjectMapper();
         Pilacoin pila = objectMapper.readValue(pilaStr, Pilacoin.class);
+        if (pila.getNomeCriador().equals(PilaUtil.USERNAME)){
+            rabbitTemplate.convertAndSend("pila-minerado", pilaStr);
+            return;
+        }
         System.out.println("Validando pila do(a): "+pila.getNomeCriador());
         BigInteger hash = PilaUtil.geraHash(pilaStr);
         if (hash.compareTo(PilaUtil.DIFFICULTY) < 0){
@@ -41,6 +45,10 @@ public class ValidaService {
     public void validaBloco(String blocoStr){
         ObjectMapper objectMapper = new ObjectMapper();
         Bloco bloco = objectMapper.readValue(blocoStr, Bloco.class);
+        if(bloco.getNomeUsuarioMinerador().equals(PilaUtil.USERNAME)){
+            rabbitTemplate.convertAndSend("bloco-minerado", blocoStr);
+            return;
+        }
         System.out.println("Validando bloco mienrado pelo(a): "+bloco.getNomeUsuarioMinerador());
         BigInteger hash = PilaUtil.geraHash(blocoStr);
         if (hash.compareTo(PilaUtil.DIFFICULTY) < 0){

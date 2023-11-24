@@ -1,10 +1,10 @@
 package br.ufsm.csi.tpav.pilacoin.repository;
 
-import br.ufsm.csi.tpav.pilacoin.model.Pilacoin;
+import br.ufsm.csi.tpav.pilacoin.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PilacoinRepository extends JpaRepository<Pilacoin, String> {
-
+public interface UsuarioRepository extends JpaRepository<Usuario, String> {
+    
 }

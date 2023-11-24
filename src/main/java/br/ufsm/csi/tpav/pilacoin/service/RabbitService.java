@@ -35,4 +35,19 @@ public class RabbitService {
     public void msgs(@Payload String msg){
         System.out.println("-=+=".repeat(10)+"\n"+msg+"\n"+"-=+=".repeat(10));
     }
+
+    @RabbitListener(queues = "report")
+    public void report(@Payload String report){
+        System.out.println(report);
+    }
+
+    @RabbitListener(queues = "biancamagro-query")
+    public void resultadoQuery(@Payload String resultado){
+        System.out.println(resultado);
+    }
+
+    @RabbitListener(queues = "clients-errors")
+    public void errors(@Payload String error){
+        System.out.println("Error: "+error);
+    }
 }

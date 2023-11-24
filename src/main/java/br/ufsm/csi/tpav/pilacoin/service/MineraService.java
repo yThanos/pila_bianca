@@ -27,7 +27,7 @@ public class MineraService {
     }
 
     @PostConstruct
-    public void main(){
+    public void mineraPila(){
         new Thread(()->{
             Pilacoin pilacoin = Pilacoin.builder().chaveCriador(PilaUtil.PUBLIC_KEY.getEncoded()).
                     nomeCriador(PilaUtil.USERNAME).dataCriacao(new Date()).build();
@@ -50,6 +50,7 @@ public class MineraService {
                 }
                 if (hash.compareTo(PilaUtil.DIFFICULTY) < 0){
                     System.out.println("===========".repeat(4)+"\nPila Minerado em: "+tentativa+" tentativas\n"+"===========".repeat(4));
+                    pilacoin.setStatus("MINERADO");
                     try {
                         rabbitTemplate.convertAndSend("pila-minerado", om.writeValueAsString(pilacoin));
                         pilacoinRepository.save(pilacoin);

@@ -9,16 +9,7 @@ import java.security.NoSuchAlgorithmException;
 
 @Service
 public class LoadKeys {
-    public LoadKeys() throws NoSuchAlgorithmException {
-        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-        kpg.initialize(2048);
-        KeyPair keyPair = kpg.generateKeyPair();
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("keypair.ser"))) {
-            out.writeObject(keyPair);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+    public LoadKeys() {
         KeyPair kp;
         try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream("keypair.ser"))) {
             kp = (KeyPair) inputStream.readObject();
