@@ -4,8 +4,6 @@ import br.ufsm.csi.tpav.pilacoin.util.PilaUtil;
 import org.springframework.stereotype.Service;
 import java.io.*;
 import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 
 @Service
 public class LoadKeys {
