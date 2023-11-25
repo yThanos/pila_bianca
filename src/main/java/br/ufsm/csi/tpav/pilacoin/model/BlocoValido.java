@@ -16,6 +16,6 @@ import lombok.NoArgsConstructor;
 public class BlocoValido {
     private String nomeValidador;
     private byte[] chavePublicaValidador;
-    private byte[] assinatura;
+    private byte[] assinaturaBloco;
     private Bloco bloco;
 }

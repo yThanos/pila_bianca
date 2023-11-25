@@ -16,6 +16,6 @@ import lombok.NoArgsConstructor;
 public class PilacoinValido {
     private String nomeValidador;
     private byte[] chavePublicaValidador;
-    private byte[] assinatura;
+    private byte[] assinaturaPilaCoin;
     private Pilacoin pilaCoinJson;
 }
