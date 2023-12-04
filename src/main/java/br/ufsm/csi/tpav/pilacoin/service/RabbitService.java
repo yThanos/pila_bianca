@@ -1,5 +1,6 @@
 package br.ufsm.csi.tpav.pilacoin.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
@@ -8,10 +9,12 @@ import org.springframework.stereotype.Service;
 public class RabbitService {
     private final ValidaService validaService;
     private final MineraService mineraService;
+    private final QueryService queryService;
 
-    public RabbitService(ValidaService validaService, MineraService mineraService) {
+    public RabbitService(ValidaService validaService, MineraService mineraService, QueryService queryService) {
         this.validaService = validaService;
         this.mineraService = mineraService;
+        this.queryService = queryService;
 
     }
 
@@ -43,7 +46,7 @@ public class RabbitService {
 
     @RabbitListener(queues = "biancamagro-query")
     public void resultadoQuery(@Payload String resultado){
-        System.out.println(resultado);
+        queryService.recebeQuery(resultado);
     }
 
     @RabbitListener(queues = "clients-errors")
