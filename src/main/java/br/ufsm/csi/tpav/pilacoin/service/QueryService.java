@@ -31,9 +31,9 @@ public class QueryService {
         QueryRecebe query = objectMapper.readValue(queryStr, QueryRecebe.class);
         if (query.getPilasResult() != null){
             for (Pilacoin pila: query.getPilasResult()){
-                if (Arrays.equals(pila.getChaveCriador(), PilaUtil.PUBLIC_KEY.getEncoded()) && pila.getTransacoes().size() == 1){
+                if (Arrays.equals(pila.getChaveCriador(), PilaUtil.PUBLIC_KEY.getEncoded()) && (pila.getTransacoes() == null || pila.getTransacoes().size() <= 1)){
                     pilacoinRepository.save(pila);
-                } else {
+                } else if (pila.getTransacoes() != null && !pila.getTransacoes().isEmpty()){
                     Transacao transacao = pila.getTransacoes().get(pila.getTransacoes().size() - 1);
                     if (Arrays.equals(transacao.getChaveUsuarioDestino(), PilaUtil.PUBLIC_KEY.getEncoded())){
                         pilacoinRepository.save(pila);

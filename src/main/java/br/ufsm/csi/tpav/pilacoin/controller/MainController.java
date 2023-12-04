@@ -1,9 +1,6 @@
 package br.ufsm.csi.tpav.pilacoin.controller;
 
-import br.ufsm.csi.tpav.pilacoin.model.MineState;
-import br.ufsm.csi.tpav.pilacoin.model.Pilacoin;
-import br.ufsm.csi.tpav.pilacoin.model.QueryEnvia;
-import br.ufsm.csi.tpav.pilacoin.model.Usuario;
+import br.ufsm.csi.tpav.pilacoin.model.*;
 import br.ufsm.csi.tpav.pilacoin.repository.PilacoinRepository;
 import br.ufsm.csi.tpav.pilacoin.repository.UsuarioRepository;
 import br.ufsm.csi.tpav.pilacoin.service.MineraService;
@@ -14,10 +11,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
+@CrossOrigin
 @RestController
-@RequestMapping
+@RequestMapping("/teste")
 public class MainController {
     private final RabbitTemplate rabbitTemplate;
     private final UsuarioRepository usuarioRepository;
@@ -48,33 +47,54 @@ public class MainController {
 
     @GetMapping("/mineState")
     public MineState getStates(){
-        return MineState.builder().mineraBloco(MineraService.isMiningBloco())
+        MineState state = MineState.builder().mineraBloco(MineraService.isMiningBloco())
                 .mineraPila(MineraService.isMining()).validaPila(ValidaService.isValidating())
                 .validaBloco(ValidaService.isValidatingBloco()).build();
+        System.out.println(state);
+        return state;
     }
 
     @GetMapping("/mineraPila")
     public boolean mineraPila(){
+        System.out.println("Alterando mineracao de pila");
         return MineraService.changeMineState();
     }
 
     @GetMapping("/mineraBloco")
     public boolean mineraBloco(){
+        System.out.println("Alterando mineracao de bloco");
         return MineraService.changeMiningBlocoState();
     }
 
     @GetMapping("/validaPila")
     public boolean validaPila(){
+        System.out.println("Alterando validacao de pila");
         return ValidaService.changeValidatingState();
     }
 
     @GetMapping("/validaBloco")
     public boolean validaBloco(){
-        return ValidaService.changeValidatingState();
+        System.out.println("Alterando validacao de bloco");
+        return ValidaService.changeValidatingBlocoState();
     }
 
     @PostMapping("/tranferir/{qntd}")
-    public void tranferirPila(@RequestBody Usuario user){
+    public void tranferirPila(@RequestBody Usuario user, @PathVariable int qntd) throws JsonProcessingException {
         //ToDo: transferir
+        List<Pilacoin> pilas = pilacoinRepository.findByStatus("VALIDO");
+        if (pilas.size() < qntd){
+            throw new RuntimeException();
+        } else {
+            ObjectMapper objectMapper = new ObjectMapper();
+            for (int i = 0; i < qntd; i++){
+                TransferirPilacoin tranferir = TransferirPilacoin.builder().noncePila(pilas.get(i).getNonce())
+                        .chaveUsuarioOrigem(PilaUtil.PUBLIC_KEY.getEncoded()).nomeUsuarioOrigem(PilaUtil.USERNAME)
+                        .chaveUsuarioDestino(user.getChavePublica()).nomeUsuarioDestino(user.getNome())
+                        .dataTransacao(new Date()).build();
+                tranferir.setAssinatura(PilaUtil.geraAssinatura(tranferir));
+                rabbitTemplate.convertAndSend("transferir-pila", objectMapper.writeValueAsString(tranferir));
+                //pilacoinRepository.delete(pilas.get(i));
+            }
+        }
     }
 }

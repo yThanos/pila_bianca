@@ -7,11 +7,12 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class MineState {
-    private boolean mineraPila;
-    private boolean mineraBloco;
-    private boolean validaPila;
-    private boolean validaBloco;
+@AllArgsConstructor
+public class Mensagem {
+    private String msg;
+    private String erro;
+    private String nomeUsuario;
+    private String nonce;
+    private String queue;
 }

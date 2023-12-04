@@ -21,6 +21,8 @@ import java.util.List;
 @Entity
 @Table(name = "pilacoin")
 public class Pilacoin {
+    @Transient
+    private long id;
     @Id
     @Column(name = "nonce", unique = true)
     private String nonce;
@@ -32,7 +34,6 @@ public class Pilacoin {
     private Date dataCriacao;
     @Transient
     private List<Transacao> transacoes;
-    @JsonIgnore
     @Column(name = "status")
     private String status;
 }
