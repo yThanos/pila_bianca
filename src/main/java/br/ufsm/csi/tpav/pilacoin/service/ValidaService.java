@@ -9,9 +9,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import lombok.Getter;
+import java.util.ArrayList;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
-
+import java.util.List;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 
@@ -23,6 +24,7 @@ public class ValidaService {
     private static boolean validating = true;
     @Getter
     private static boolean validatingBloco = true;
+    private List<String> ignoreList = new ArrayList<>();
 
     public ValidaService(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
@@ -30,6 +32,12 @@ public class ValidaService {
 
 
     public void validaPila(String pilaStr){
+        if (ignoreList.contains(pilaStr)) {
+            rabbitTemplate.convertAndSend("pila-minerado", pilaStr);
+            System.out.println("Ja tentei validei ou tentei validar");
+            return;
+        }
+        ignoreList.add(pilaStr);
         if (!validating){
             System.out.println("Ignorando validação de pilas");
             rabbitTemplate.convertAndSend("pila-minerado", pilaStr);
@@ -75,6 +83,12 @@ public class ValidaService {
 
 
     public void validaBloco(String blocoStr) {
+        if (ignoreList.contains(blocoStr)) {
+            rabbitTemplate.convertAndSend("bloco-minerado", blocoStr);
+            System.out.println("Ja tentei validei ou tentei validar");
+            return;
+        }
+        ignoreList.add(blocoStr);
         if (!validatingBloco){
             System.out.println("Ignorando validação de blocos");
             rabbitTemplate.convertAndSend("bloco-minerado", blocoStr);

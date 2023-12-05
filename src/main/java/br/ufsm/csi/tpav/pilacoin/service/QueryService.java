@@ -7,7 +7,6 @@ import br.ufsm.csi.tpav.pilacoin.model.Transacao;
 import br.ufsm.csi.tpav.pilacoin.repository.PilacoinRepository;
 import br.ufsm.csi.tpav.pilacoin.repository.UsuarioRepository;
 import br.ufsm.csi.tpav.pilacoin.util.PilaUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
