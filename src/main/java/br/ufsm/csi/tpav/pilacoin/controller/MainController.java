@@ -4,6 +4,7 @@ import br.ufsm.csi.tpav.pilacoin.model.*;
 import br.ufsm.csi.tpav.pilacoin.repository.PilacoinRepository;
 import br.ufsm.csi.tpav.pilacoin.repository.UsuarioRepository;
 import br.ufsm.csi.tpav.pilacoin.service.MineraService;
+import br.ufsm.csi.tpav.pilacoin.service.RabbitService;
 import br.ufsm.csi.tpav.pilacoin.service.ValidaService;
 import br.ufsm.csi.tpav.pilacoin.util.PilaUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -93,8 +94,13 @@ public class MainController {
                         .dataTransacao(new Date()).build();
                 tranferir.setAssinatura(PilaUtil.geraAssinatura(tranferir));
                 rabbitTemplate.convertAndSend("transferir-pila", objectMapper.writeValueAsString(tranferir));
-                //pilacoinRepository.delete(pilas.get(i));
+                pilacoinRepository.delete(pilas.get(i));
             }
         }
+    }
+
+    @GetMapping("/logs")
+    public List<Mensagem> getLogs(){
+        return RabbitService.msgs;
     }
 }

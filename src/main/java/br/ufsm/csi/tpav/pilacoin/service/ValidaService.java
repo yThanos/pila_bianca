@@ -99,6 +99,7 @@ public class ValidaService {
         try {
             bloco = objectMapper.readValue(blocoStr, Bloco.class);
         } catch (JsonProcessingException e) {
+            System.out.println(blocoStr);
             System.out.println("bloco formato ivnalido");
             return;
         }

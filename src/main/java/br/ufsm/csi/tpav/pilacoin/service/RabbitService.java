@@ -17,7 +17,7 @@ public class RabbitService {
     private final MineraService mineraService;
     private final QueryService queryService;
     private final SimpMessagingTemplate template;
-    private List<Mensagem> msgs = new ArrayList<>();
+    public static List<Mensagem> msgs = new ArrayList<>();
 
     public RabbitService(ValidaService validaService, MineraService mineraService, QueryService queryService, SimpMessagingTemplate simpMessagingTemplate) {
         this.validaService = validaService;
@@ -45,7 +45,7 @@ public class RabbitService {
 
     @RabbitListener(queues = "biancamagro")
     public void msgs(@Payload String msg) throws JsonProcessingException {
-        System.out.println("-=+=".repeat(10)+"\n"+msg+"\n"+"-=+=".repeat(10));
+        //System.out.println("-=+=".repeat(10)+"\n"+msg+"\n"+"-=+=".repeat(10));
         ObjectMapper om = new ObjectMapper();
         Mensagem message = om.readValue(msg, Mensagem.class);
         msgs.add(0,message);
