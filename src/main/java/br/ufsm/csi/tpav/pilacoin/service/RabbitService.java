@@ -43,9 +43,9 @@ public class RabbitService {
         validaService.validaBloco(bloco);
     }
 
-    @RabbitListener(queues = "biancamagro")
+    @RabbitListener(queues = "bincavitor")
     public void msgs(@Payload String msg) throws JsonProcessingException {
-        //System.out.println("-=+=".repeat(10)+"\n"+msg+"\n"+"-=+=".repeat(10));
+        System.out.println("-=+=".repeat(10)+"\n"+msg+"\n"+"-=+=".repeat(10));
         ObjectMapper om = new ObjectMapper();
         Mensagem message = om.readValue(msg, Mensagem.class);
         msgs.add(0,message);
@@ -57,7 +57,7 @@ public class RabbitService {
         System.out.println(report);
     }
 
-    @RabbitListener(queues = "biancamagro-query")
+    @RabbitListener(queues = "bincavitor-query")
     public void resultadoQuery(@Payload String resultado){
         queryService.recebeQuery(resultado);
     }

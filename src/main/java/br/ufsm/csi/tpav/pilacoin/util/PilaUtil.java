@@ -15,7 +15,7 @@ public class PilaUtil {
     public static PrivateKey PRIVATE_KEY;
     public static PublicKey PUBLIC_KEY;
     public static BigInteger DIFFICULTY = new BigInteger("f".repeat(59), 16).abs();
-    public static String USERNAME = "biancamagro";
+    public static String USERNAME = "bincavitor";
 
     @SneakyThrows
     public static byte[] geraAssinatura(Object object) {

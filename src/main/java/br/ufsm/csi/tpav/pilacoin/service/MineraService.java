@@ -60,8 +60,9 @@ public class MineraService {
                     System.out.println("===========".repeat(4)+"\nPila Minerado em: "+tentativa+" tentativas\n"+"===========".repeat(4));
                     try {
                         rabbitTemplate.convertAndSend("pila-minerado", om.writeValueAsString(pilacoin));
-                        pilacoin.setStatus("AG_VALIDACAO");
-                        pilacoinRepository.save(pilacoin);
+                        Pilacoin pila = pilacoin;
+                        pila.setStatus("AG_VALIDACAO");
+                        pilacoinRepository.save(pila);
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
@@ -80,16 +81,20 @@ public class MineraService {
         if (!miningBloco){
             System.out.println("Ignorando blocos!");
             rabbitTemplate.convertAndSend("descobre-bloco", blocoJson);
+            return;
         }
         ObjectMapper objectMapper = new ObjectMapper();
         Bloco bloco = objectMapper.readValue(blocoJson, Bloco.class);
         bloco.setChaveUsuarioMinerador(PilaUtil.PUBLIC_KEY.getEncoded());
         bloco.setNomeUsuarioMinerador(PilaUtil.USERNAME);
         BigInteger hash;
+        int tentativas = 0;
         while (true){
+            tentativas++;
             bloco.setNonce(PilaUtil.geraNonce());
             hash = PilaUtil.geraHash(bloco);
             if(hash.compareTo(PilaUtil.DIFFICULTY) < 0){
+                System.out.println("Tentativas: "+tentativas);
                 System.out.println("Minerou Bloco\n"+hash+"\n"+PilaUtil.DIFFICULTY+"\n"+bloco.getNumeroBloco());
                 rabbitTemplate.convertAndSend("bloco-minerado", objectMapper.writeValueAsString(bloco));
                 return;

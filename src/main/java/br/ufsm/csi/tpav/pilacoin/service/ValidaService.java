@@ -24,7 +24,7 @@ public class ValidaService {
     private static boolean validating = true;
     @Getter
     private static boolean validatingBloco = true;
-    private List<String> ignoreList = new ArrayList<>();
+    private final List<String> ignoreList = new ArrayList<>();
 
     public ValidaService(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
@@ -32,9 +32,10 @@ public class ValidaService {
 
 
     public void validaPila(String pilaStr){
+        System.out.println(pilaStr);
         if (ignoreList.contains(pilaStr)) {
             rabbitTemplate.convertAndSend("pila-minerado", pilaStr);
-            System.out.println("Ja tentei validei ou tentei validar");
+            System.out.println("[PILA] Ja tentei validar ou validei");
             return;
         }
         ignoreList.add(pilaStr);
@@ -85,7 +86,7 @@ public class ValidaService {
     public void validaBloco(String blocoStr) {
         if (ignoreList.contains(blocoStr)) {
             rabbitTemplate.convertAndSend("bloco-minerado", blocoStr);
-            System.out.println("Ja tentei validei ou tentei validar");
+            System.out.println("[BLOCO] Ja tentei validar ou validei");
             return;
         }
         ignoreList.add(blocoStr);
